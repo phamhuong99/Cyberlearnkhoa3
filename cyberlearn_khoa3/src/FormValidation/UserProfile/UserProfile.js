@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./UserProfile.css";
+import Swal from "sweetalert2";
 export default class UserProfile extends Component {
   state = {
     values: {
@@ -76,6 +77,55 @@ export default class UserProfile extends Component {
     // );
   };
 
+  handleSubmit = (event) => {
+    //cản trình duyệt submit reload lại trang
+    event.preventDefault();
+    //xét điều kiện khi submit
+    let { values, errors } = this.state;
+    //biến xác định form hợp lệ
+    let valid = true;
+    let profileContent = "";
+    let errorContent = "";
+    for (let key in values) {
+      if (values[key] === "") {
+        valid = false;
+        errorContent += `
+        <p class="text-left"><b class="text-danger">${key} is invalid!</b></p> `;
+        valid = false;
+      }
+      profileContent += `
+        <p class="text-left">
+          <b>${key}:</b> ${values[key]}
+        </p>`;
+    }
+
+    for (let key in errors) {
+      if (errors[key] !== "") {
+        errorContent += `
+        <p class="text-left"><b class="text-danger">${key} is invalid!</b></p>`;
+        valid = false;
+      }
+    }
+
+    if (!valid) {
+      Swal.fire({
+        title: "Your Profile",
+        html: errorContent,
+        icon: "error", //success, error, warning, question
+        confirmButtoText: "OK",
+      });
+      // alert("dữ liệu chưa hợp lệ");
+      return;
+    }
+    // alert("Thành công");
+    Swal.fire({
+      title: "Your Profile",
+      html: profileContent,
+      icon: "success", //success, error, warning, question
+      confirmButtoText: "OK",
+    });
+  };
+
   render() {
     return (
       <div
@@ -87,6 +137,7 @@ export default class UserProfile extends Component {
         }}
       >
         <form
+          onSubmit={this.handleSubmit}
           style={{
             fontSize:
               'font-family: "Google Sans", "Noto Sans Myanmar UI", arial, sans-serif',
